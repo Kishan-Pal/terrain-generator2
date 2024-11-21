@@ -23,6 +23,7 @@ const GeneratorComponent = () => {
   const [gridArray, setGridArray] = useState();
   const [imageArray, setImageArray] = useState();
   const inputRef = useRef();
+  const formInputRefs = useRef(new Array(6));
 
   useEffect(() => {
     // let a = new Block(probabilities);
@@ -39,7 +40,7 @@ const GeneratorComponent = () => {
     setGridArray(createGridArray(grid));
     //console.log(gridArray);
     window.addEventListener("keypress", handleKeyPress);
-
+    verifyForm();
     //createMyInterval();
   }, []);
 
@@ -234,6 +235,20 @@ const GeneratorComponent = () => {
     createMyInterval();
   };
 
+  const verifyForm = () => {
+    let sum = 0.0;
+    for (let i = 0; i < 4; i++) {
+      sum += parseFloat(formInputRefs.current[i].value);
+    }
+    if (sum !== 1) {
+      formInputRefs.current[3].value =
+        1 - sum + parseFloat(formInputRefs.current[3].value);
+    }
+    if (parseFloat(formInputRefs.current[4].value) < 1) {
+      formInputRefs.current[4].value = 1;
+    }
+  };
+
   const startGenerator = () => {
     createMyInterval();
   };
@@ -243,7 +258,7 @@ const GeneratorComponent = () => {
   };
 
   return (
-    <div className="flex flex-row gap-1">
+    <div className="flex flex-row m-2 gap-2">
       <div
         className={`h-[${viewPort}px] w-[${viewPort}px] `}
         ref={inputRef}
@@ -274,25 +289,108 @@ const GeneratorComponent = () => {
           </div>
         ))}
       </div>
-      <div className="flex flex-col gap-1">
-        <input
-          className="bg-red-300  px-2 py-1"
-          type="button"
-          value={"Restart"}
-          onClick={() => restartGenerator()}
-        />
-        <input
-          className="bg-green-300  px-2 py-1"
-          type="button"
-          value={"Start"}
-          onClick={() => startGenerator()}
-        />
-        <input
-          className="bg-yellow-300  px-2 py-1"
-          type="button"
-          value={"Stop"}
-          onClick={() => stopGenerator()}
-        />
+      <div>
+        <div className="">
+          <div className="flex flex-col gap-2 w-[200px]">
+            <div className="flex gap-2">
+              <img className="size-[70px]" src={image1} />
+              <label className="hidden" htmlFor="tree-probability">
+                Tree probability
+              </label>
+              <input
+                name="tree-probability"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                type="text"
+                ref={(el) => (formInputRefs.current[0] = el)}
+                defaultValue={0.25}
+              />
+            </div>
+            <div className="flex gap-2 ">
+              <img className="size-[70px]" src={image2} />
+              <label className="hidden" htmlFor="grass-probability">
+                Grass probability
+              </label>
+              <input
+                name="grass-probability"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                type="text"
+                ref={(el) => (formInputRefs.current[1] = el)}
+                defaultValue={0.25}
+              />
+            </div>
+            <div className="flex gap-2">
+              <img className="size-[70px]" src={image3} />
+              <label className="hidden" htmlFor="sand-probability">
+                Sand probability
+              </label>
+              <input
+                name="sand-probability"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                type="text"
+                ref={(el) => (formInputRefs.current[2] = el)}
+                defaultValue={0.25}
+              />
+            </div>
+            <div className="flex gap-2">
+              <img className="size-[70px]" src={image4} onClick={verifyForm} />
+              <label className="hidden" htmlFor="water-probability">
+                Water probability
+              </label>
+              <input
+                name="water-probability"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                type="text"
+                ref={(el) => (formInputRefs.current[3] = el)}
+                defaultValue={0.25}
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <label htmlFor="strictness" className="w-[70px] flex-shrink-0">
+                Strictness
+              </label>
+              <input
+                name="strictness"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                defaultValue={5}
+                ref={(el) => (formInputRefs.current[4] = el)}
+                type="text"
+              />
+            </div>
+            <div className="flex gap-2">
+              <label htmlFor="radius" className="w-[70px] flex-shrink-0">
+                Radius
+              </label>
+              <input
+                name="radius"
+                className="px-2 py-1 w-full border-black border-[1px] outline-none rounded-lg"
+                defaultValue={5}
+                ref={(el) => (formInputRefs.current[5] = el)}
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col mt-2 gap-1 w-[200px]">
+          <input
+            className="bg-red-300  px-2 py-1"
+            type="button"
+            value={"Restart"}
+            onClick={() => restartGenerator()}
+          />
+          <input
+            className="bg-green-300  px-2 py-1"
+            type="button"
+            value={"Start"}
+            onClick={() => startGenerator()}
+          />
+          <input
+            className="bg-yellow-300  px-2 py-1"
+            type="button"
+            value={"Stop"}
+            onClick={() => stopGenerator()}
+          />
+        </div>
       </div>
     </div>
   );
