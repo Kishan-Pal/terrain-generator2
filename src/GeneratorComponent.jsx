@@ -89,6 +89,7 @@ const GeneratorComponent = () => {
 
     for (let i = startRow; i <= endRow; i++) {
       for (let j = startCol; j <= endCol; j++) {
+        if (gridArray[i][j].collapsed) continue;
         reduceProbability(gridArray[i][j], imageNo);
       }
     }
@@ -117,39 +118,49 @@ const GeneratorComponent = () => {
   const reduceProbability = (block, imageNo) => {
     let rem = 0;
     let reducingFactor = 5;
+    let temp = 0;
     switch (imageNo) {
       case 1:
         rem = 0;
-        rem += block.probabilities[2] / reducingFactor;
-        block.probabilities[2] -= block.probabilities[2] / reducingFactor;
-        rem += block.probabilities[3] / reducingFactor;
-        block.probabilities[3] -= block.probabilities[3] / reducingFactor;
-        rem += block.probabilities[4] / reducingFactor;
-        block.probabilities[4] -= block.probabilities[4] / reducingFactor;
+        temp = block.probabilities[2] / reducingFactor;
+        block.probabilities[2] -= temp;
+        rem += temp;
+        temp = block.probabilities[3] / reducingFactor;
+        block.probabilities[3] -= temp;
+        rem += temp;
+        temp = block.probabilities[4] / reducingFactor;
+        block.probabilities[4] -= temp;
+        rem += temp;
         block.probabilities[1] += rem;
+        //console.log(block.probabilities[1]);
         break;
       case 2:
         rem = 0;
-        rem += block.probabilities[1] / reducingFactor;
-        block.probabilities[1] -= block.probabilities[1] / reducingFactor;
-        rem += block.probabilities[3] / reducingFactor;
-        block.probabilities[3] -= block.probabilities[3] / reducingFactor;
-        rem += block.probabilities[4] / reducingFactor;
-        block.probabilities[4] -= block.probabilities[4] / reducingFactor;
-
+        temp = block.probabilities[1] / reducingFactor;
+        block.probabilities[1] -= temp;
+        rem += temp;
+        temp = block.probabilities[3] / reducingFactor;
+        block.probabilities[3] -= temp;
+        rem += temp;
+        temp = block.probabilities[4] / reducingFactor;
+        block.probabilities[4] -= temp;
+        rem += temp;
         block.probabilities[2] += rem;
+        //console.log(block.probabilities[2]);
         break;
       case 3:
         rem = 0;
-
-        rem += block.probabilities[1] / reducingFactor;
-        block.probabilities[1] -= block.probabilities[1] / reducingFactor;
-        rem += block.probabilities[2] / reducingFactor;
-        block.probabilities[2] -= block.probabilities[3] / reducingFactor;
-        rem += block.probabilities[4] / reducingFactor;
-        block.probabilities[4] -= block.probabilities[4] / reducingFactor;
-
+        temp = block.probabilities[1] / reducingFactor;
+        block.probabilities[1] -= temp;
+        rem += temp;
+        temp = block.probabilities[2] / reducingFactor;
+        block.probabilities[2] -= temp;
+        rem += temp;
+        temp = block.probabilities[4] / reducingFactor;
+        block.probabilities[4] -= temp;
+        rem += temp;
         block.probabilities[3] += rem;
+        //console.log(block.probabilities[3]);
 
         // rem += block.probabilities[1] / reducingFactor;
         // block.probabilities[1] -= block.probabilities[1] / reducingFactor;
@@ -161,15 +172,21 @@ const GeneratorComponent = () => {
         break;
       case 4:
         rem = 0;
-        rem += block.probabilities[1] / reducingFactor;
-        block.probabilities[1] -= block.probabilities[1] / reducingFactor;
-        rem += block.probabilities[2] / reducingFactor;
-        block.probabilities[2] -= block.probabilities[2] / reducingFactor;
-        rem += block.probabilities[3] / reducingFactor;
-        block.probabilities[3] -= block.probabilities[3] / reducingFactor;
-
+        temp = block.probabilities[1] / reducingFactor;
+        block.probabilities[1] -= temp;
+        rem += temp;
+        temp = block.probabilities[2] / reducingFactor;
+        block.probabilities[2] -= temp;
+        rem += temp;
+        temp = block.probabilities[3] / reducingFactor;
+        block.probabilities[3] -= temp;
+        rem += temp;
         block.probabilities[4] += rem;
+        //console.log(block.probabilities[4]);
         break;
+    }
+    if (rem >= 1) {
+      console.log(rem, imageNo);
     }
   };
 
