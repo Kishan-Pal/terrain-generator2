@@ -15,11 +15,13 @@ const grid = 40;
 const viewPort = 500;
 const images = 4;
 const delay = 0;
-const radius = 5;
+var radius = 5;
+var strictness = 5;
 var end = false;
 var timeInterval = 0;
 
 const GeneratorComponent = () => {
+  // const [probabilities, setProbabilities] = useState([0.25, 0.25, 0.25, 0.25]);
   const [gridArray, setGridArray] = useState();
   const [imageArray, setImageArray] = useState();
   const inputRef = useRef();
@@ -57,7 +59,7 @@ const GeneratorComponent = () => {
   //   }, [gridArray]);
 
   const handleKeyPress = (e) => {
-    console.log(e);
+    //console.log(e);
     if (e.key == "c") {
       // do a step
       inputRef.current.click();
@@ -117,18 +119,18 @@ const GeneratorComponent = () => {
 
   const reduceProbability = (block, imageNo) => {
     let rem = 0;
-    let reducingFactor = 5;
+    // let strictness = 5;
     let temp = 0;
     switch (imageNo) {
       case 1:
         rem = 0;
-        temp = block.probabilities[2] / reducingFactor;
+        temp = block.probabilities[2] / strictness;
         block.probabilities[2] -= temp;
         rem += temp;
-        temp = block.probabilities[3] / reducingFactor;
+        temp = block.probabilities[3] / strictness;
         block.probabilities[3] -= temp;
         rem += temp;
-        temp = block.probabilities[4] / reducingFactor;
+        temp = block.probabilities[4] / strictness;
         block.probabilities[4] -= temp;
         rem += temp;
         block.probabilities[1] += rem;
@@ -136,13 +138,13 @@ const GeneratorComponent = () => {
         break;
       case 2:
         rem = 0;
-        temp = block.probabilities[1] / reducingFactor;
+        temp = block.probabilities[1] / strictness;
         block.probabilities[1] -= temp;
         rem += temp;
-        temp = block.probabilities[3] / reducingFactor;
+        temp = block.probabilities[3] / strictness;
         block.probabilities[3] -= temp;
         rem += temp;
-        temp = block.probabilities[4] / reducingFactor;
+        temp = block.probabilities[4] / strictness;
         block.probabilities[4] -= temp;
         rem += temp;
         block.probabilities[2] += rem;
@@ -150,13 +152,13 @@ const GeneratorComponent = () => {
         break;
       case 3:
         rem = 0;
-        temp = block.probabilities[1] / reducingFactor;
+        temp = block.probabilities[1] / strictness;
         block.probabilities[1] -= temp;
         rem += temp;
-        temp = block.probabilities[2] / reducingFactor;
+        temp = block.probabilities[2] / strictness;
         block.probabilities[2] -= temp;
         rem += temp;
-        temp = block.probabilities[4] / reducingFactor;
+        temp = block.probabilities[4] / strictness;
         block.probabilities[4] -= temp;
         rem += temp;
         block.probabilities[3] += rem;
@@ -172,13 +174,13 @@ const GeneratorComponent = () => {
         break;
       case 4:
         rem = 0;
-        temp = block.probabilities[1] / reducingFactor;
+        temp = block.probabilities[1] / strictness;
         block.probabilities[1] -= temp;
         rem += temp;
-        temp = block.probabilities[2] / reducingFactor;
+        temp = block.probabilities[2] / strictness;
         block.probabilities[2] -= temp;
         rem += temp;
-        temp = block.probabilities[3] / reducingFactor;
+        temp = block.probabilities[3] / strictness;
         block.probabilities[3] -= temp;
         rem += temp;
         block.probabilities[4] += rem;
@@ -246,6 +248,10 @@ const GeneratorComponent = () => {
   };
 
   const restartGenerator = () => {
+    if (!verifyForm()) {
+      console.log("invalid probabilities.");
+      return;
+    }
     setGridArray(createGridArray(grid));
     clearInterval(timeInterval);
     end = false;
@@ -257,13 +263,41 @@ const GeneratorComponent = () => {
     for (let i = 0; i < 4; i++) {
       sum += parseFloat(formInputRefs.current[i].value);
     }
+    let lastProbability = parseFloat(formInputRefs.current[3].value);
     if (sum !== 1) {
-      formInputRefs.current[3].value =
-        1 - sum + parseFloat(formInputRefs.current[3].value);
+      lastProbability = 1 - sum + parseFloat(formInputRefs.current[3].value);
     }
-    if (parseFloat(formInputRefs.current[4].value) < 1) {
+    if (lastProbability >= 0) {
+      formInputRefs.current[3].value = lastProbability;
+    } else {
+      return false;
+    }
+    if (parseInt(formInputRefs.current[4].value) < 1) {
       formInputRefs.current[4].value = 1;
+    } else {
+      formInputRefs.current[4].value = parseInt(formInputRefs.current[4].value);
     }
+    if (parseInt(formInputRefs.current[5].value) < 1) {
+      formInputRefs.current[5].value = 1;
+    } else {
+      formInputRefs.current[5].value = parseInt(formInputRefs.current[5].value);
+    }
+    useFormValues();
+    return true;
+  };
+
+  const useFormValues = () => {
+    // let tempProbabilityArray = [];
+    // for (let i = 0; i < 4; i++) {
+    //   tempProbabilityArray.push(parseFloat(formInputRefs.current[i].value));
+    // }
+    // setProbabilities(tempProbabilityArray);
+    for (let i = 0; i < 4; i++) {
+      probabilities[i] = parseFloat(formInputRefs.current[i].value);
+    }
+    console.log(probabilities);
+    strictness = parseInt(formInputRefs.current[4].value);
+    radius = parseInt(formInputRefs.current[5].value);
   };
 
   const startGenerator = () => {
